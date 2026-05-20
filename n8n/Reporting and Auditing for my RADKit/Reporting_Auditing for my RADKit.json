@@ -27,7 +27,7 @@
           "cachedResultName": "radkit-loves-agenticops",
           "cachedResultUrl": "https://github.com/ponchotitlan/radkit-loves-agenticops"
         },
-        "filePath": "=reports/files/{{ $('Consolidate report query').item.json.file_prefix }}_{{ $now}}.md",
+        "filePath": "=n8n/Reporting and Auditing for my RADKit/reports/files/{{ $('Consolidate report query').item.json.file_prefix }}_{{ $now}}.md",
         "fileContent": "={{ $json.output }}",
         "commitMessage": "={{ $('Consolidate report query').item.json.file_prefix }} report gen"
       },
@@ -102,7 +102,7 @@
           "cachedResultName": "radkit-loves-agenticops",
           "cachedResultUrl": "https://github.com/ponchotitlan/radkit-loves-agenticops"
         },
-        "filePath": "reports",
+        "filePath": "n8n/Reporting and Auditing for my RADKit/reports",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -124,7 +124,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const entries = $input.all().flatMap(item => {\n  const data = item.json;\n\n  if (Array.isArray(data)) return data;\n  if (Array.isArray(data.items)) return data.items;\n  if (Array.isArray(data.data)) return data.data;\n\n  return [data];\n});\n\nconst reportQueryFiles = entries\n  .filter(entry => entry && entry.type === 'file' && typeof entry.path === 'string')\n  .filter(entry => entry.path.startsWith('reports/') && entry.path.endsWith('.txt'));\n\nreturn reportQueryFiles.map(file => ({\n  json: {\n    report_query_path: file.path\n  }\n}));"
+        "jsCode": "const entries = $input.all().flatMap(item => {\n  const data = item.json;\n\n  if (Array.isArray(data)) return data;\n  if (Array.isArray(data.items)) return data.items;\n  if (Array.isArray(data.data)) return data.data;\n\n  return [data];\n});\n\nconst reportQueryFiles = entries\n  .filter(entry =>\n    entry &&\n    entry.type === 'file' &&\n    typeof entry.path === 'string' &&\n    entry.path.includes('/reports/') &&\n    entry.path.endsWith('.txt')\n  );\n\nreturn reportQueryFiles.map(file => ({\n  json: {\n    report_query_path: file.path\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -165,7 +165,7 @@
           "cachedResultName": "radkit-loves-agenticops",
           "cachedResultUrl": "https://github.com/ponchotitlan/radkit-loves-agenticops"
         },
-        "filePath": "agents/network_report_agent.txt",
+        "filePath": "n8n/Reporting and Auditing for my RADKit/agents/network_report_agent.txt",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -201,7 +201,7 @@
           "cachedResultName": "radkit-loves-agenticops",
           "cachedResultUrl": "https://github.com/ponchotitlan/radkit-loves-agenticops"
         },
-        "filePath": "agents/network_ticketing_agent.txt",
+        "filePath": "n8n/Reporting and Auditing for my RADKit/agents/network_ticketing_agent.txt",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -957,7 +957,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "f4ea656b-2e6c-4d4e-89ed-ce8598a21449",
+  "versionId": "6ca8ae4b-1a0f-4ceb-9301-87827bec0c48",
   "meta": {
     "instanceId": "7ef80d074504fe064404d3acb97f2c56a52c610120233990c1a806faf1c98cc3"
   },

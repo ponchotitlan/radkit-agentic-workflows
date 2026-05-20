@@ -1,6 +1,6 @@
 <h1 align="center">🚀 RADKit 🫰 AgenticOps<br /><br />
 <div align="center">
-<img src="radkit-repo-logo.png"/>
+<img src="images/radkit-repo-logo.png"/>
 </div>
 
 <div align="center">

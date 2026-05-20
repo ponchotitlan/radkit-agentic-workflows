@@ -59,7 +59,7 @@ services:
     build:
       context: .
       dockerfile: docker/radkit-mcp.Dockerfile
-    container_name: radkit-mcp
+    container_name: radkit-mcp-full
     environment:
       RADKIT_MCP_PORT: ${RADKIT_MCP_PORT}
       RADKIT_SANDBOX: ${RADKIT_SANDBOX}
@@ -83,7 +83,7 @@ services:
     build:
       context: .
       dockerfile: docker/radkit-mcp.Dockerfile
-    container_name: radkit-mcp-2
+    container_name: radkit-mcp-readonly
     environment:
       RADKIT_MCP_PORT: ${RADKIT2_MCP_PORT}
       RADKIT_SANDBOX: ${RADKIT2_SANDBOX}
