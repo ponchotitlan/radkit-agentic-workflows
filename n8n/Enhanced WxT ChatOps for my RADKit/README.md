@@ -18,7 +18,7 @@ Uses **multiple specialized agents**, structured guardrails, and real device int
 - 👤 Human approval via Webex Adaptive Cards before changes
 - 🔁 Rollback-aware execution
 - 🌐 Publicly reachable webhooks via Cloudflare Tunnel (required by Webex)
-- 🧩 Fully self-hosted (n8n + Anthropic Claude + MCP)
+- 🧩 Fully self-hosted (n8n + MCP)
 
 ---
 
@@ -80,6 +80,15 @@ Result: **predictable, inspectable, auditable automation with clear human-in-the
 
 ---
 
+## 🏗️ Use cases
+
+- Querying my RADKit device inventory
+- Fine-grained querying of device configurations and statuses
+- Cross-check against intended configurations and states
+- Housekeeping chores via guarded commits
+
+---
+
 ## 🛠️ Setup
 
 ### 1. Cloudflare Tunnel and Cisco RADKit MCP servers containers
@@ -104,3 +113,6 @@ To set this up along with the Cisco RADKit MCP servers as containers, check [thi
 
 ---
 
+<div align="center"><br />
+    Made with ☕️ by Poncho Sandoval - <code>Developer Advocate 🥑 @ DevNet - Cisco Systems 🇵🇹</code>
+</div>
