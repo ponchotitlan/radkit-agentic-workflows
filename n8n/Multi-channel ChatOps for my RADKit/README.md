@@ -45,7 +45,7 @@ The Cloudflare flow looks like this:
 n8n.yourdomain.com  →  Cloudflare Tunnel  →  n8n (container, port 5678)
 ```
 
-To set this up along with the Cisco RADKit MCP servers as containers, check [this guide](../../docs/HOWTO-RADKIT-MCP.md#-docker-based-deployment-of-the-mcp-server).
+To set this up along with the Cisco RADKit MCP servers as containers, check [this guide](../../docs/HOWTO-RADKIT-MCP.md#-docker-based-deployment-of-the-mcp-server-n8n-and-cloudflare-tunnel).
 
 ### 2. Webex Setup
 ✅💬 See [this frustration-free guide!](../../docs/WEBEX-SETUP.md)
