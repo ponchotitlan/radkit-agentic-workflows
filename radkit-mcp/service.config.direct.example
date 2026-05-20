@@ -1,0 +1,7 @@
+{
+  "type": "direct",
+  "username": "your_user@your_domain.com",
+  "password_base64": "your_E2EE_password_from_the_webui",
+  "host": "your_radkit_host",
+  "rpc_port": your_radkit_rpc_port
+}  

@@ -1,19 +1,17 @@
 <h1 align="center">🚀 RADKit 🫰 AgenticOps<br /><br />
 <div align="center">
-<img src="radkit_agenticops_logo.png" width="300"/>
+<img src="radkit-repo-logo.png"/>
 </div>
 
 <div align="center">
 <a href="https://developer.cisco.com/codeexchange/github/repo/ponchotitlan/radkit-loves-agenticops"><img src="https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg" alt="DevNet published"></a>
 <img src="https://img.shields.io/badge/n8n-Workflow-EA4B71?style=flat-square&logo=n8n&logoColor=white" alt="n8n">
-<img src="https://img.shields.io/badge/Cisco-RADKit-049fd9?style=flat-square&logo=cisco&logoColor=white" alt="Cisco RADKit">
-<img src="https://img.shields.io/badge/MCP-Protocol-000000?style=flat-square&logo=anthropic&logoColor=white" alt="MCP">
-<img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/RADKit-1.9.6-blue?logo=cisco&logoColor=white" alt="RADKit version" />
+<img src="https://img.shields.io/badge/Python-3.12%2B-yellow?logo=python&logoColor=white" alt="Python version" />
 <img src="https://img.shields.io/badge/Docker-Required-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+<img src="https://img.shields.io/badge/MCP-Protocol-000000?style=flat-square&logo=anthropic&logoColor=white" alt="MCP" />
 </div>
-<div align="center">
-<a href="https://deepwiki.com/ponchotitlan/radkit-loves-agenticops"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-</div></h1>
+</h1>
 
 <div align="center">
 A collection of <strong>low-code</strong>, AgenticOps workflows based on <strong>n8n, MCP and Cisco RADKit</strong> for some nice Network Automation experiments 🧪
@@ -29,24 +27,14 @@ This repository showcases a series of **AI-powered low-code workflows** for inte
 
 ---
 
-## 🎯 What are we focusing on?
-
-- **🧩 Low-Code Approach** - Build complex automation without extensive coding
-- **🤝 Multi-Platform Support** - Works seamlessly across different platforms
-- **⚡ Fast Deployment** - Import, configure, and run in minutes
-- **🔐 Enterprise-Ready** - Built on proven Cisco RADKit infrastructure
-- **🧠 AI-Native** - Leverages MCP (Model Context Protocol) for intelligent interactions
-
----
-
 ## ✅ Prerequisites
 
 Before diving in, make sure you have these essentials ready:
 
-- 🐳 **Docker** - For containerized workflow execution
-- 🐍 **Python 3.10+** - Required for MCP server operations
-- 🔧 **Active Cisco RADKit service** - Your network automation backbone
-- 👤 **At least one remote user onboarded** - Pre-configured on your RADKit service
+- 🐳 **Docker**: For containerized workflow execution
+- 🐍 **Python 3.10+**: Required for MCP server operations
+- 🔧 **Active Cisco RADKit service**: Your network automation backbone
+- 👤 **At least one remote user onboarded**: Pre-configured on your RADKit service
 
 ---
 
@@ -64,9 +52,11 @@ Each workflow is self-contained with its own configuration and detailed instruct
 
 ## 📦 Available Workflows
 
-| Workflow Name | Description | Key Features |
-|---------------|-------------|--------------|
-| **[Multi-channel ChatOps for my RADKit Network workflow](https://github.com/ponchotitlan/radkit-loves-agenticops/tree/main/n8n/Multi-channel%20ChatOps%20for%20my%20RADKit%20Network%20workflow)** | Interact with your Cisco RADKit network through natural language conversations | 💬 Slack integration<br>🔷 Cisco Webex support<br>🤖 LLM-powered interactions<br>🔌 Direct MCP server connectivity |
+| Workflow Name | Description |
+|---------------|-------------|
+| 💬 **[Multi-channel ChatOps for my RADKit](./n8n/Multi-channel%20ChatOps%20for%20my%20RADKit/)** | ChatOps for housekeeping operations via Webex and Slack simultaneously|
+| 🛡️ **[Enhanced WxT ChatOps for my RADKit](./n8n/Enhanced%20WxT%20ChatOps%20for%20my%20RADKit/)** | Enhanced ChatOps via Webex that include guardrails, human-in-the-loop for config commits, conflict detection and much more |
+| 📊 **[Reporting and Auditing for my RADKit](./n8n/Reporting%20and%20Auditing%20for%20my%20RADKit/)** | Automated triggering of audits based on GitHub files to create reports and issues in GitHub based on the findings |
 
 ---
 
@@ -78,7 +68,7 @@ Got ideas for new workflows or improvements? Contributions are welcome! Feel fre
 
 ## 🌐 Resources
 
-- [Cisco RADKit Documentation](https://developer.cisco.com/)
+- [Other awesome RADKit coding projects](https://github.com/Cisco-RADKit)
 - [n8n Documentation](https://docs.n8n.io/)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 

@@ -1,0 +1,112 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Lisbon
+      - GENERIC_TIMEZONE=Europe/Lisbon
+
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+
+      - NODE_EXTRA_CA_CERTS=/home/node/cisco-ca.pem
+
+      # n8n listens locally; public URL is set explicitly below.
+      - N8N_HOST=localhost
+      - N8N_LISTEN_ADDRESS=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${N8N_PUBLIC_URL}
+      - N8N_EDITOR_BASE_URL=${N8N_PUBLIC_URL}
+      - N8N_PROXY_HOPS=1
+      - N8N_CORS_CREDENTIALS=true
+      - N8N_CORS_ALLOWED_ORIGINS=${N8N_PUBLIC_URL}
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./cisco-ca.pem:/home/node/cisco-ca.pem:ro
+
+    ports:
+      - "127.0.0.1:5678:5678"
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+    networks:
+      - internal
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:2026.3.0
+    container_name: cloudflare-tunnel
+    restart: unless-stopped
+    command: tunnel --protocol http2 run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      n8n:
+        condition: service_healthy
+    networks:
+      - internal
+
+  radkit-mcp-full:
+    build:
+      context: .
+      dockerfile: docker/radkit-mcp.Dockerfile
+    container_name: radkit-mcp
+    environment:
+      RADKIT_MCP_PORT: ${RADKIT_MCP_PORT}
+      RADKIT_SANDBOX: ${RADKIT_SANDBOX}
+      RADKIT_SERVICE_CONFIG: ${RADKIT_SERVICE_CONFIG}
+      RADKIT_PROFILE: ${RADKIT_PROFILE}
+      RADKIT_PROMPT_FILE: ${RADKIT_PROMPT_FILE}
+      RADKIT_AUTO_APPROVE: ${RADKIT_AUTO_APPROVE}
+      RADKIT_ACCESS_MODE: ${RADKIT_ACCESS_MODE}
+    ports:
+      - "${RADKIT_MCP_HOST_PORT}:${RADKIT_MCP_PORT}"
+    volumes:
+      - ./${RADKIT_SERVICE_CONFIG}:/app/${RADKIT_SERVICE_CONFIG}:ro
+      - ./${RADKIT_PROFILE}:/app/${RADKIT_PROFILE}:ro
+      - ./${RADKIT_PROMPT_FILE}:/app/${RADKIT_PROMPT_FILE}:ro
+      - ${RADKIT_LOGS_HOST_DIR}:/app/logs
+    restart: ${RADKIT_RESTART_POLICY}
+    networks:
+      - internal
+
+  radkit-mcp-readonly:
+    build:
+      context: .
+      dockerfile: docker/radkit-mcp.Dockerfile
+    container_name: radkit-mcp-2
+    environment:
+      RADKIT_MCP_PORT: ${RADKIT2_MCP_PORT}
+      RADKIT_SANDBOX: ${RADKIT2_SANDBOX}
+      RADKIT_SERVICE_CONFIG: ${RADKIT2_SERVICE_CONFIG}
+      RADKIT_PROFILE: ${RADKIT2_PROFILE}
+      RADKIT_PROMPT_FILE: ${RADKIT2_PROMPT_FILE}
+      RADKIT_AUTO_APPROVE: ${RADKIT2_AUTO_APPROVE}
+      RADKIT_ACCESS_MODE: ${RADKIT2_ACCESS_MODE}
+    ports:
+      - "${RADKIT2_MCP_HOST_PORT}:${RADKIT2_MCP_PORT}"
+    volumes:
+      - ./${RADKIT2_SERVICE_CONFIG}:/app/${RADKIT2_SERVICE_CONFIG}:ro
+      - ./${RADKIT2_PROFILE}:/app/${RADKIT2_PROFILE}:ro
+      - ./${RADKIT2_PROMPT_FILE}:/app/${RADKIT2_PROMPT_FILE}:ro
+      - ${RADKIT2_LOGS_HOST_DIR}:/app/logs
+    restart: ${RADKIT2_RESTART_POLICY}
+    networks:
+      - internal
+
+volumes:
+  n8n_data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

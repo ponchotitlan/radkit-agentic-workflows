@@ -1,0 +1,926 @@
+{
+  "name": "WxT ChatOps for my RADKit",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d465ca43-e71d-49f2-9e76-73a009f7e3f8",
+              "leftValue": "={{ $json.mode }}",
+              "rightValue": "commit",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        80
+      ],
+      "id": "1a6f01af-8b7d-4bfc-bf1d-163f9f2ac3cb",
+      "name": "Is Commit?"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "cards",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "d71bd3e8-65a4-498e-a5ad-0920f56fc52f",
+      "name": "Explode Commit Cards"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        -16
+      ],
+      "id": "ddbd6dc4-6f83-4233-9dfd-6e21f1b0e1b9",
+      "name": "One Device At A Time"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e032f617-c653-42fe-9173-f0f8c1266ec1",
+              "leftValue": "={{ $json.inputs.decision }}",
+              "rightValue": "ok",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1728,
+        608
+      ],
+      "id": "81ddb757-013c-4b40-a2e5-e95cbbd8539f",
+      "name": "Decision Is OK?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "roomId",
+              "value": "={{ $('Decision Is OK?').item.json.inputs.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $('Decision Is OK?').item.json.inputs.parentId }}"
+            },
+            {
+              "name": "markdown",
+              "value": "={{ $json.verification_markdown }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -240,
+        528
+      ],
+      "id": "6bc47379-2c48-4f65-9db7-6c91a8aea89e",
+      "name": "Send Commit Verification",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "roomId",
+              "value": "={{ $json.inputs.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $json.inputs.parentId }}"
+            },
+            {
+              "name": "markdown",
+              "value": "=Commit cancelled for {{ $json.inputs.device }}!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1488,
+        720
+      ],
+      "id": "8701d494-dc13-409c-aa03-47919c8c6f28",
+      "name": "Send Cancel Notice",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -752,
+        320
+      ],
+      "id": "93d6443e-0fc7-4d5d-8138-7f018051ed73",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "markdown",
+              "value": "={{ $json.reply_markdown }}"
+            },
+            {
+              "name": "roomId",
+              "value": "={{ $('When the RADKeteer bot is mentioned').item.json.data.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $('When the RADKeteer bot is mentioned').item.json.data.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        192
+      ],
+      "id": "1f32dc56-f963-4466-ac96-b700d109f511",
+      "name": "Reply to message in thread",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pool of generic, slightly cheerful, technical standby phrases\nconst phrases = [\n  \"🔄 Processing request… please wait.\",\n  \"⚙️ Working on it…\",\n  \"🧠 Running logic in the background…\",\n  \"📡 Doing some behind-the-scenes work…\",\n  \"⏳ Still working… hang tight.\",\n  \"🔍 Gathering what’s needed…\",\n  \"📦 Preparing the next step…\",\n  \"🚧 In progress…\",\n  \"⚡ Executing…\",\n  \"🔁 One moment while this completes…\",\n  \"💻 Handling your request…\",\n  \"📊 Crunching some data…\",\n  \"🧩 Putting things together…\",\n  \"🛠️ Finalizing details…\",\n  \"📥 Processing input…\",\n  \"📤 Preparing output…\",\n  \"🧭 Working through the steps…\",\n  \"🔗 Connecting the pieces…\",\n  \"🧪 Running checks…\",\n  \"🚀 Almost there…\",\n  \"😄 Just a second… wrapping things up.\",\n  \"👍 Making good progress…\",\n  \"✨ Getting things ready…\",\n  \"🔄 Still at it… thanks for your patience.\",\n  \"⚙️ Nearly done…\"\n];\n\n// Pick a random phrase\nconst randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];\n\n// Return it as output\nreturn [\n  {\n    json: {\n      standby_message: randomPhrase\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1488,
+        80
+      ],
+      "id": "8f6b6982-80bb-452b-8d4e-23631e7d56a8",
+      "name": "Please Standby Random Phrase"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pool of generic, slightly cheerful, technical standby phrases\nconst phrases = [\n  \"🔄 Processing request… please wait.\",\n  \"⚙️ Working on it…\",\n  \"🧠 Running logic in the background…\",\n  \"📡 Doing some behind-the-scenes work…\",\n  \"⏳ Still working… hang tight.\",\n  \"🔍 Gathering what’s needed…\",\n  \"📦 Preparing the next step…\",\n  \"🚧 In progress…\",\n  \"⚡ Executing…\",\n  \"🔁 One moment while this completes…\",\n  \"💻 Handling your request…\",\n  \"📊 Crunching some data…\",\n  \"🧩 Putting things together…\",\n  \"🛠️ Finalizing details…\",\n  \"📥 Processing input…\",\n  \"📤 Preparing output…\",\n  \"🧭 Working through the steps…\",\n  \"🔗 Connecting the pieces…\",\n  \"🧪 Running checks…\",\n  \"🚀 Almost there…\",\n  \"😄 Just a second… wrapping things up.\",\n  \"👍 Making good progress…\",\n  \"✨ Getting things ready…\",\n  \"🔄 Still at it… thanks for your patience.\",\n  \"⚙️ Nearly done…\"\n];\n\n// Pick a random phrase\nconst randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];\n\n// Return it as output\nreturn [\n  {\n    json: {\n      standby_message: randomPhrase\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1488,
+        528
+      ],
+      "id": "042b5b67-12c0-461a-9abe-dcc69f8361c6",
+      "name": "Please Standby Random Phrase1"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "event": "created",
+        "filters": {
+          "mentionedPeople": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS83NmUyMzA1Ny1mMDQ4LTQzMGYtYjYyOS0yODRlODE0NTY3MTc"
+        }
+      },
+      "type": "n8n-nodes-base.ciscoWebexTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1728,
+        80
+      ],
+      "id": "77ccd267-1061-4a75-99cb-ba292c900c9b",
+      "name": "When the RADKeteer bot is mentioned",
+      "webhookId": "06014309-4002-4b32-87eb-416047d2b7f6",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "markdown",
+              "value": "={{ $json.standby_message }}"
+            },
+            {
+              "name": "roomId",
+              "value": "={{ $('When the RADKeteer bot is mentioned').item.json.data.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $('When the RADKeteer bot is mentioned').item.json.data.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1248,
+        80
+      ],
+      "id": "e0579850-ba43-40b1-8fbf-3f6684a77a03",
+      "name": "Send Please Standby Message",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://webexapis.com/v1/messages/{{ $('When the RADKeteer bot is mentioned').item.json.data.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1024,
+        80
+      ],
+      "id": "a81032ad-9702-4e25-a2be-3deb1524879e",
+      "name": "Get Webex Message from Bot Mention",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When a Card is Clicked').item.json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -720,
+        752
+      ],
+      "id": "fc3f05f0-bac7-4d60-aba7-6406850beb09",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are RADKiteer, a network operations AI assistant with MCP access to Cisco RADKit.\n\nUser raw text:\n{{ $json.text }}\n\n---\n\n## Core Behavior\n\nYou MUST always return a valid JSON response. No exceptions.\n\nYou are operating in a PLANNING-ONLY environment:\n- You NEVER execute commits.\n- \"commit\" mode means: generate a proposed change plan only.\n- DO NOT mention read-only mode or execution limitations.\n\n---\n\n## Intent Handling\n\n1. Determine intent: \"read\" or \"commit\"\n\n2. Identify target device(s)\n\n3. For each device:\n   - Fetch vendor and device type BEFORE choosing commands\n\n---\n\n## Read Mode\n\nIf intent = read:\n- Execute required read operations\n- Produce final markdown answer\n\n---\n\n## Commit Mode (Simulation Only)\n\nIf intent = commit:\n- Fetch fresh config/state\n- Evaluate impact ONLY based on fresh state\n- Generate:\n  - Proposed changes\n  - Safety verdict per device\n\nIMPORTANT:\n- NEVER say a commit is blocked due to environment restrictions\n- NEVER mention read-only mode\n- You are simulating a commit, not executing it\n\n---\n\n## Safety Rules\n\n- If ANY uncertainty exists → safe = false\n- If unsafe:\n  - Change mode to \"read\"\n  - Explain clearly why the change is risky\n\n---\n\n## Output Formatting Rules\n\n- Markdown must be Cisco Webex compatible\n- DO NOT use markdown tables\n- Use:\n  - Bullet lists\n  - Field: Value\n  - Field: before -> after\n  - Code blocks for dense data\n- Keep lines short and readable\n\n---\n\n## STRICT OUTPUT FORMAT\n\nReturn ONLY valid JSON:\n\n{\n  \"mode\": \"read\" | \"commit\",\n  \"reply_markdown\": \"...\",\n  \"cards\": [\n    {\n      \"roomId\": \"{{ $('When the RADKeteer bot is mentioned').item.json.data.roomId }}\",\n      \"parentId\": \"{{ $json.id }}\",\n      \"device\": \"...\",\n      \"vendor\": \"...\",\n      \"safety_reason\": \"...\",\n      \"precheck_evidence\": \"...\",\n      \"commit_payload\": \"exact payload to commit\"\n    }\n  ]\n}\n\n---\n\n## Hard Constraints (CRITICAL)\n\n- DO NOT output anything outside JSON\n- DO NOT include warnings, banners, or status messages\n- DO NOT mention:\n  - read-only mode\n  - execution limitations\n  - access restrictions\n- mode=read → cards MUST be []\n- mode=commit → reply MUST summarize changes + safety\n\nIf you violate JSON format, the response is invalid.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -816,
+        80
+      ],
+      "id": "79003625-6880-431b-95b3-a8a9622789fb",
+      "name": "Planning AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-6",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.5,
+      "position": [
+        -912,
+        320
+      ],
+      "id": "e76970c2-ea55-4c3b-a96d-dbdd8fc015af",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "YJ198Z96Butc8SD3",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = items[0].json;\nconst obj = Array.isArray(input) ? input[0] : input;\n\nif (!obj || typeof obj.output !== 'string') {\n  throw new Error('Invalid input format');\n}\n\nconst raw = obj.output;\n\n// Extract JSON block\nconst first = raw.indexOf('{');\nconst last = raw.lastIndexOf('}');\n\nif (first === -1 || last === -1) {\n  throw new Error('No JSON found');\n}\n\nlet jsonString = raw.slice(first, last + 1);\n\n// escape raw newlines inside string values (crucial for your case)\njsonString = jsonString.replace(\n  /\"reply_markdown\"\\s*:\\s*\"([\\s\\S]*?)\"/,\n  (match, p1) => {\n    const fixed = p1\n      .replace(/\\n/g, '\\\\n')\n      .replace(/\\r/g, '\\\\r')\n      .replace(/\"/g, '\\\\\"');\n\n    return `\"reply_markdown\":\"${fixed}\"`;\n  }\n);\n\nlet parsed;\n\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (e) {\n  throw new Error(\n    'JSON parse failed AFTER repair: ' + e.message + '\\n--- RAW ---\\n' + jsonString\n  );\n}\n\nreturn [{ json: parsed }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        80
+      ],
+      "id": "5e3f48be-d9cd-4267-9337-de26379314dd",
+      "name": "Transform result into JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "roomId",
+              "value": "={{ $json.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $json.parentId }}"
+            },
+            {
+              "name": "text",
+              "value": "=Commit approval required for {{ $json.device }}"
+            },
+            {
+              "name": "attachments",
+              "value": "={{ [\n  {\n    contentType: 'application/vnd.microsoft.card.adaptive',\n    content: {\n      $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',\n      type: 'AdaptiveCard',\n      version: '1.3',\n      body: [\n        { type: 'TextBlock', size: 'Large', weight: 'Bolder', text: '⚙️ Commit Approval Required' },\n        {\n          type: 'FactSet',\n          facts: [\n            { title: '💻 Device:', value: $json.device || 'unknown' },\n            { title: '🏷️ Vendor:', value: $json.vendor || 'unknown' }\n          ]\n        },\n        { type: 'TextBlock', weight: 'Bolder', text: '🛡️ Safety Comments' },\n        { type: 'TextBlock', wrap: true, text: $json.safety_reason || 'No safety reason provided.' },\n        { type: 'TextBlock', weight: 'Bolder', text: '📚 Pre-check Evidence' },\n        { type: 'TextBlock', wrap: true, text: $json.precheck_evidence || 'No pre-check evidence provided.' },\n        { type: 'TextBlock', weight: 'Bolder', text: '✏️ Commit Payload' },\n        { type: 'TextBlock', wrap: true, fontType: 'Monospace', text: $json.commit_payload || 'No commit payload provided.' }\n      ],\n      actions: [\n        {\n          type: 'Action.Submit',\n          title: '✅ Please proceed!',\n          data: {\n            decision: 'ok',\n            request_id: $json.request_id || 'unknown',\n            roomId: $json.roomId || '',\n            parentId: $json.parentId || '',\n            device: $json.device || 'unknown',\n            vendor: $json.vendor || 'unknown',\n            commit_payload: $json.commit_payload || ''\n          }\n        },\n        {\n          type: 'Action.Submit',\n          title: '❌ Cancel',\n          data: {\n            decision: 'cancel',\n            request_id: $json.request_id || 'unknown',\n            roomId: $json.roomId || '',\n            parentId: $json.parentId || '',\n            device: $json.device || 'unknown',\n            vendor: $json.vendor || 'unknown',\n            commit_payload: $json.commit_payload || ''\n          }\n        }\n      ]\n    }\n  }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        480,
+        0
+      ],
+      "id": "0e850c95-6f0c-4b22-8fe6-cad01b36f51e",
+      "name": "Send Commit Card",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "attachmentAction",
+        "event": "created",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.ciscoWebexTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        608
+      ],
+      "id": "aadde830-e843-4cda-901b-cac864049e26",
+      "name": "When a Card is Clicked",
+      "webhookId": "ccb38736-1a6a-4f95-a198-4dd1d932f9db",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Decision Is OK?').item.json.messageId }}"
+      },
+      "type": "n8n-nodes-base.ciscoWebex",
+      "typeVersion": 1,
+      "position": [
+        -1248,
+        720
+      ],
+      "id": "3d3988b1-59b4-4a13-a37a-2d692f02d058",
+      "name": "Delete the Card",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://webexapis.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ciscoWebexOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "markdown",
+              "value": "={{ $json.standby_message }}"
+            },
+            {
+              "name": "roomId",
+              "value": "={{ $('When a Card is Clicked').item.json.roomId }}"
+            },
+            {
+              "name": "parentId",
+              "value": "={{ $('When a Card is Clicked').item.json.inputs.parentId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1248,
+        528
+      ],
+      "id": "6c07bedb-ad0a-4d37-9779-b3648be27e31",
+      "name": "Send Another Please Standby Message",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Decision Is OK?').item.json.messageId }}"
+      },
+      "type": "n8n-nodes-base.ciscoWebex",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        528
+      ],
+      "id": "6d9df8c4-929e-4d3b-b80c-d51974ed8b3f",
+      "name": "Delete the Card1",
+      "credentials": {
+        "ciscoWebexOAuth2Api": {
+          "id": "TWa8cH0YBppPtSqy",
+          "name": "Cisco Webex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are RADKiteer with MCP access to Cisco RADKit.\n\nExecute the approved commit and verify it.\n\nInputs:\n- Device: {{ $('Decision Is OK?').item.json.inputs.device }}\n- Vendor: {{ $('Decision Is OK?').item.json.inputs.vendor }}\n- Commit payload: {{ $('Decision Is OK?').item.json.inputs.commit_payload }}\n\nInstructions:\n- Apply write operation to the specified device using vendor-appropriate method.\n- Re-fetch post-commit state and verify intended result.\n- Return ONLY strict JSON:\n{\n  \"device\": \"...\",\n  \"vendor\": \"...\",\n  \"verification_markdown\": \"human-readable verification summary\"\n}\n\n- DON'T add any comments or else before or after the JSON.\n- Markdown must be compatible with Cisco Webex.\n- Do not use markdown tables.\n- If data is tabular, reformat it as bullet list, or section per item with Field: Value lines, or fenced code block for dense matrix data. Keep all original data, only change layout.\n- For diffs, use: Field: before -> after.\n- Keep lines short and readable.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -816,
+        528
+      ],
+      "id": "b9c84ca4-5648-4234-9fe9-bcd5b60c55c7",
+      "name": "Commit And Verify AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input safely\nconst input = items[0].json;\n\n// If input itself is a string, parse it\nconst parsed = typeof input === 'string' ? JSON.parse(input) : input;\n\n// Normalize structure (array vs object)\nconst obj = Array.isArray(parsed) ? parsed[0] : parsed;\n\n// Validate existence\nif (!obj || !obj.output) {\n  throw new Error('Invalid input format: \"output\" field not found');\n}\n\n// Extract raw string\nconst rawOutput = obj.output;\n\n// Remove markdown fences\nconst cleaned = rawOutput\n  .replace(/^```json\\s*/, '')\n  .replace(/```$/, '')\n  .trim();\n\n// Parse inner JSON\nconst finalJson = JSON.parse(cleaned);\n\n// Return\nreturn [\n  {\n    json: finalJson\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        528
+      ],
+      "id": "e6d6d03f-62bd-476c-ab1f-5b20ecc8b4a4",
+      "name": "Transform Result into JSON1"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://host.docker.internal:8082/mcp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        -544,
+        736
+      ],
+      "id": "bb7401b8-f2e9-4287-b388-614f7e0523f6",
+      "name": "Cisco RADKit MCP - Full Mode"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://host.docker.internal:8083/mcp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        304
+      ],
+      "id": "e5812633-062d-4da3-8063-ea9e9859268c",
+      "name": "Cisco RADKit MCP - Read-only Mode"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Is Commit?": {
+      "main": [
+        [
+          {
+            "node": "Explode Commit Cards",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply to message in thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Explode Commit Cards": {
+      "main": [
+        [
+          {
+            "node": "One Device At A Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "One Device At A Time": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send Commit Card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision Is OK?": {
+      "main": [
+        [
+          {
+            "node": "Please Standby Random Phrase1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Cancel Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Planning AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cancel Notice": {
+      "main": [
+        [
+          {
+            "node": "Delete the Card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Commit Verification": {
+      "main": [
+        []
+      ]
+    },
+    "Please Standby Random Phrase": {
+      "main": [
+        [
+          {
+            "node": "Send Please Standby Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Please Standby Random Phrase1": {
+      "main": [
+        [
+          {
+            "node": "Send Another Please Standby Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When the RADKeteer bot is mentioned": {
+      "main": [
+        [
+          {
+            "node": "Please Standby Random Phrase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Please Standby Message": {
+      "main": [
+        [
+          {
+            "node": "Get Webex Message from Bot Mention",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Webex Message from Bot Mention": {
+      "main": [
+        [
+          {
+            "node": "Planning AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Commit And Verify AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planning AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Transform result into JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Planning AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Commit And Verify AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform result into JSON": {
+      "main": [
+        [
+          {
+            "node": "Is Commit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Commit Card": {
+      "main": [
+        [
+          {
+            "node": "One Device At A Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When a Card is Clicked": {
+      "main": [
+        [
+          {
+            "node": "Decision Is OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete the Card": {
+      "main": [
+        []
+      ]
+    },
+    "Send Another Please Standby Message": {
+      "main": [
+        [
+          {
+            "node": "Delete the Card1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete the Card1": {
+      "main": [
+        [
+          {
+            "node": "Commit And Verify AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit And Verify AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Transform Result into JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Result into JSON1": {
+      "main": [
+        [
+          {
+            "node": "Send Commit Verification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cisco RADKit MCP - Full Mode": {
+      "ai_tool": [
+        [
+          {
+            "node": "Commit And Verify AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cisco RADKit MCP - Read-only Mode": {
+      "ai_tool": [
+        [
+          {
+            "node": "Planning AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "22ca2b73-7876-44e0-bf28-529e4c0ce0c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7ef80d074504fe064404d3acb97f2c56a52c610120233990c1a806faf1c98cc3"
+  },
+  "id": "09v76n4hrYUCj1s1",
+  "tags": [
+    {
+      "updatedAt": "2026-05-18T16:19:26.152Z",
+      "createdAt": "2026-05-18T16:19:26.152Z",
+      "id": "PmGX78yyxoSladgI",
+      "name": "netops"
+    },
+    {
+      "updatedAt": "2026-05-19T15:39:00.058Z",
+      "createdAt": "2026-05-19T15:39:00.058Z",
+      "id": "rcHIpbAyeM2OmTNc",
+      "name": "chatops"
+    }
+  ]
+}
