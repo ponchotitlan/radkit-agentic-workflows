@@ -12,8 +12,6 @@ services:
       - EXECUTIONS_DATA_SAVE_ON_ERROR=all
       - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
 
-      - NODE_EXTRA_CA_CERTS=/home/node/cisco-ca.pem
-
       # n8n listens locally; public URL is set explicitly below.
       - N8N_HOST=localhost
       - N8N_LISTEN_ADDRESS=0.0.0.0
@@ -27,7 +25,6 @@ services:
 
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./cisco-ca.pem:/home/node/cisco-ca.pem:ro
 
     ports:
       - "127.0.0.1:5678:5678"
