@@ -1,4 +1,4 @@
-<h1 align="center">🚀 RADKit 🫰 AgenticOps<br /><br />
+<h1 align="center">🚀 RADKit 🫰 Agentic Workflows<br /><br />
 <div align="center">
 <img src="images/radkit-repo-logo.png"/>
 </div>
@@ -14,7 +14,7 @@
 </h1>
 
 <div align="center">
-A collection of <strong>low-code</strong>, AgenticOps workflows based on <strong>n8n, MCP and Cisco RADKit</strong> for some nice Network Automation experiments 🧪
+A collection of <strong>low-code</strong>, Agentic workflows based on <strong>n8n, MCP and Cisco RADKit</strong> for some nice Network Automation experiments 🧪
 <br /><br />
 </div>
 
