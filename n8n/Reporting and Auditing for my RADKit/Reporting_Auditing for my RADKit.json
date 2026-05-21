@@ -6,7 +6,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        10768,
+        10624,
         2320
       ],
       "id": "8e143866-60e9-4544-9a67-681a5bc5c542",
@@ -109,7 +109,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        10976,
+        10832,
         2320
       ],
       "id": "407c7b8f-1b7d-4b3c-ba0d-80554b3fbd36",
@@ -129,7 +129,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11184,
+        11040,
         2320
       ],
       "id": "0ff5b945-c45e-4d33-bf4c-3523200a7ee2",
@@ -143,7 +143,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        11408,
+        11232,
         2320
       ],
       "id": "6089c72b-6531-4d37-9171-9672845b8a29",
@@ -172,7 +172,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        10976,
+        11520,
         2080
       ],
       "id": "16df2cf5-1805-403a-b281-c30a624eaed4",
@@ -228,7 +228,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11184,
+        11744,
         2080
       ],
       "id": "88c036f7-08aa-4f6a-ac55-1b8bc2fe28b5",
@@ -345,7 +345,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        11648,
+        11520,
         2320
       ],
       "id": "e8c1e0b8-2551-400e-ac6e-c3695ec20d7b",
@@ -400,7 +400,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.netauto_agent_prompt }}\n\n- Query: {{ $json.query }}\n- Intent: {{ $json.intent }}\n- Notes: {{ $json.notes }}\n",
+        "text": "={{ $json.netauto_agent_prompt }}\n\n- Query: {{ $json.query }}\n- Notes: {{ $json.notes }}\n",
         "options": {
           "maxIterations": 100
         }
@@ -421,8 +421,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11840,
-        2144
+        11744,
+        2320
       ],
       "id": "3d701429-ae72-44cc-8327-56ca0e685547",
       "name": "Decode report query file"
@@ -490,8 +490,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        10768,
-        2080
+        10624,
+        2176
       ],
       "id": "c8c48790-ca6c-4b03-8475-c02dfe7e4c1c",
       "name": "Schedule Trigger"
@@ -503,25 +503,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11648,
+        11632,
         2624
       ],
       "id": "c31801b6-eeba-4809-a000-ba1bd2260791",
       "name": "Random execution ID for memory"
-    },
-    {
-      "parameters": {
-        "endpointUrl": "http://host.docker.internal:8083/mcp",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
-      "typeVersion": 1.2,
-      "position": [
-        12720,
-        2384
-      ],
-      "id": "a35d1302-991f-4677-a1b6-a1224f0fab7a",
-      "name": "Cisco RADKit MCP - Full Mode"
     },
     {
       "parameters": {
@@ -551,7 +537,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        14656,
+        14624,
         2384
       ],
       "id": "3f841de0-015a-4389-a876-6b4007590222",
@@ -591,7 +577,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        14656,
+        14624,
         2624
       ],
       "id": "6dae9d8d-3de4-4baf-afd5-feea8f04f801",
@@ -602,6 +588,20 @@
           "name": "Cisco Webex account"
         }
       }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://host.docker.internal:8083/mcp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        12720,
+        2384
+      ],
+      "id": "a35d1302-991f-4677-a1b6-a1224f0fab7a",
+      "name": "Cisco RADKit MCP - Read-Only Mode"
     }
   ],
   "pinData": {},
@@ -611,11 +611,6 @@
         [
           {
             "node": "List report query files",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get the report agent prompt",
             "type": "main",
             "index": 0
           }
@@ -762,6 +757,11 @@
             "node": "Random execution ID for memory",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Get the report agent prompt",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -884,11 +884,6 @@
       "main": [
         [
           {
-            "node": "Get the report agent prompt",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "List report query files",
             "type": "main",
             "index": 0
@@ -903,17 +898,6 @@
             "node": "Merge report query data",
             "type": "main",
             "index": 2
-          }
-        ]
-      ]
-    },
-    "Cisco RADKit MCP - Full Mode": {
-      "ai_tool": [
-        [
-          {
-            "node": "Reports AI Agent",
-            "type": "ai_tool",
-            "index": 0
           }
         ]
       ]
@@ -950,6 +934,17 @@
           }
         ]
       ]
+    },
+    "Cisco RADKit MCP - Read-Only Mode": {
+      "ai_tool": [
+        [
+          {
+            "node": "Reports AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -957,7 +952,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "6ca8ae4b-1a0f-4ceb-9301-87827bec0c48",
+  "versionId": "03897e79-f342-4b2b-b300-9dcb273671fc",
   "meta": {
     "instanceId": "7ef80d074504fe064404d3acb97f2c56a52c610120233990c1a806faf1c98cc3"
   },
