@@ -80,13 +80,19 @@ Clean separation of concerns:
    - Sends an adaptive card with report link in all cases
    - Includes issue link when an issue is created
 
+<div align="center"></br>
+<img src="../../images/reporting_cards.png"/></br>
+<img src="../../images/reporting_report.png"/></br>
+<img src="../../images/reporting_issue.png"/></br>
+</div>
+
 ---
 
 ## 📂 GitHub-driven behavior
 
 This workflow is intentionally **Git-native**:
 
-- Prompts are stored in GitHub  
+- All agent prompts are stored in GitHub  
 - Report requests are stored in GitHub  
 - Outputs (reports) are committed to GitHub  
 - Findings become GitHub Issues  
