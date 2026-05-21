@@ -80,6 +80,34 @@ Result: **predictable, inspectable, auditable automation with clear human-in-the
 
 ---
 
+When querying any specific configuration about any device in the inventory tagging the `RADKiteer` bot, the MCP server sends the request via RADKit and then displays the result in the chat.
+<div align="center"></br>
+<img src="../../images/wxt_read.png"/></br>
+</div>
+
+---
+
+Any commit intent results in a card for human-in-the-loop approval. The card will show up if and only if the configuration is deemed safe. The card will include justifications for why the commit is safe, taking into account freshly collected data from the target device.
+<div align="center"></br>
+<img src="../../images/wxt_card.png"/></br>
+</div>
+
+---
+
+On the other hand, if the configuration intent collides with anything existing, the agent will highlight this and explain.
+<div align="center"></br>
+<img src="../../images/wxt_conflict.png"/></br>
+</div>
+
+---
+
+When clicking Proceed, the commit is done and the agent collects evidence to verify if the configuration was successfully applied.
+<div align="center"></br>
+<img src="../../images/wxt_commit.png"/></br>
+</div>
+
+---
+
 ## 🏗️ Use cases
 
 - Querying my RADKit device inventory
